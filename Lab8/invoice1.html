@@ -4,7 +4,19 @@
     */
 
     // Product data
-    var product_quantities = [1,2,3,4,5];
+    var product_quantities = [5,4,3,2,1];
+    
+    // array of all products
+// corresponds to product_quantities array
+// product_quantities[i] is the quantity for products[i]
+products = [
+ { 'name': 'small gumball', 'price': 0.02 },
+ { 'name': 'medium gumball', 'price': 0.05 },
+ { 'name': 'large gumball', 'price': 0.07 },
+ { 'name': 'small jawbreaker', 'price': 0.06 },
+ { 'name': 'large jawbreaker', 'price': 0.10 }
+];
+
     product_quantities.pop();
     // Product 1
     var prod1 = { 
@@ -15,7 +27,7 @@
     };
 
         // Product 2
-        var item2 = 'Barbasol Shaving Cream';
+    var item2 = 'Barbasol Shaving Cream';
     var quantity2 = product_quantities[1]
     var price2 = 2.64;
 
@@ -65,6 +77,33 @@
 </head>
 
 <body>
+  <table style="border: 1px solid black;text-align: center;">
+    <tbody>
+    <tr style="border: 1px solid black;">
+      <th style="border: 1px solid black;">Product #</th>
+      <th style="border: 1px solid black;">Quantity</th>
+      <th style="border: 1px solid black;">Name</th>
+      <th style="border: 1px solid black;">Price</th>
+      <th style="border: 1px solid black;">Ext Price</th>
+    </tr>
+      <script>
+        // generate table rows
+        for(var i=0; i<product_quantities.length; i++) {
+          document.write(`
+          <tr style="border: 1px solid black;">
+            <td style="border: 1px solid black;">${i+1}</td>
+            <td style="border: 1px solid black;">${product_quantities[i]}</td>
+            <td style="border: 1px solid black;">${products[i]["name"]}</td>
+            <td style="border: 1px solid black;">\$${products[i]["price"]}</td>
+            <td style="border: 1px solid black;">\$${(product_quantities[i]*products[i]["price"]).toFixed(2)}</td>
+          </tr>
+          `);
+        }
+      </script>
+
+
+    </tbody></table>
+
 <table border="2">
   <tbody>
     <tr>
