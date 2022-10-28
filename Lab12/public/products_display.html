@@ -1,5 +1,10 @@
 <script src="./product_data.js" type=""></script>
-
+<script>
+    let params = (new URL(document.location)).searchParams;
+    if(params.has('error')) {
+        alert(params.get('error'));
+    }
+</script>
 <!DOCTYPE html>
 <html>
 
@@ -38,7 +43,7 @@
         <h1>
             Your One Stop For Used Phones
         </h1>
-        <center><input type="submit" value="Purchase"></center>
+        <center><input type="submit" value="Purchase" name="purchase_submit"></center>
     </footer>
 </body>
 </form>
