@@ -48,10 +48,13 @@ app.get("/set_cookie", function (request, response) {
     // Get the username cookie 
     // if(typeof requ)
     response.send(`welcome, your session ID is ${request.sessionID}`);
-
+    request.session.destroy();
  });
 
 app.get("/login", function (request, response) {
+    if(typeof request.session['last_login'] == 'undefined') {
+        request.session['last_login'] = 'first login!';
+    }
     // Give a simple login form
     str = `
 <body>
@@ -60,6 +63,8 @@ app.get("/login", function (request, response) {
 <input type="password" name="password" size="40" placeholder="enter password"><br />
 <input type="submit" value="Submit" id="submit">
 </form>
+<br>
+You last logged in:${ request.session['last_login'] }
 </body>
     `;
     response.send(str);
@@ -77,6 +82,7 @@ app.post("/login", function (request, response) {
             // check if password entered matched saved password
             if(password_entered == users_reg_data[username_entered].password) {
                 resp_msg = `${username_entered} is logged in.`;
+                request.session['last_login'] = new Date();
             } else {
                 resp_msg = `Incorrect password!`;
                 error = true;
