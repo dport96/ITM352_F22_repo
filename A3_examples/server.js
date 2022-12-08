@@ -20,20 +20,15 @@ app.post("/get_products_data", function (request, response) {
 });
 
 app.post("/addToCart", function (request, response) {
-    var selections = JSON.parse(request.query);
-    response.send(selections);
-   //  response.json(products_data);
+    // add quantities to session for cart
+    if(typeof request.session.cart == 'undefined') {request.session.cart = {}}; // in case cart not yet defined
+    request.session.cart[request.query.products_key] = request.query.quantities;
+    response.send(`${request.query.quantities.reduce((a, b) => Number(a) + Number(b), 0)} items added to cart`);
+    console.log(request.session.cart);
 });
 
 
-app.get("/add_to_cart", function (request, response) {
-    var products_key = request.query['products_key']; // get the product key sent from the form post
-    var quantities = request.query['quantities'].map(Number); // Get quantities from the form post and convert strings from form post to numbers
-    request.session.cart[products_key] = quantities; // store the quantities array in the session cart object with the same products_key. 
-    response.redirect('./cart.html');
-});
-
-app.get("/get_cart", function (request, response) {
+app.post("/get_cart", function (request, response) {
     response.json(request.session.cart);
 });
 

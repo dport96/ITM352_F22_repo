@@ -2,12 +2,11 @@
     <script src="./functions.js"></script>
     <script>
 function addToCart() {
-    params.append('prod_key', this_product_key};
     for(let i in products) {
-        params.append(`quantities[${i}]`, product_form[`quantities[${i}]`].value);
+        params.set(`quantities[${i}]`, product_form[`quantities[${i}]`].value);
     }
-    console.log(selections);
-    loadJSON('./addToCart?selections=' + JSON.stringify(selections), function(resp) {alert(resp)});
+    console.log(params.toString());
+    loadJSON('./addToCart?' + params.toString(), function(resp) {alert(resp)});
 }
         // get the query string
         var params = (new URL(document.location)).searchParams;
@@ -22,6 +21,12 @@ function addToCart() {
         loadJSON('get_products_data', function (response) {
             // Parsing JSON string into object
             products_data = JSON.parse(response);
+        });
+
+        var cart;
+        loadJSON('get_cart', function (response) {
+            // Parsing JSON string into object
+            cart= JSON.parse(response);
         });
     </script>
 </head>
@@ -38,24 +43,33 @@ function addToCart() {
     if (params.has('Submit')) {
         // grab the quantities from the query string
         order_str = 'Your order is:<br>';
-        for (i = 0; i < products.length; i++) {
-            order_str += `You want ${params.get(`quantities[${i}]`)} of ${products[i]['name']}<br>`;
-        }
+        for(let pt in cart) {
+            for (let i in cart[pt]) {
+                order_str += `You want ${cart[pt][i]} of ${products_data[pt][i]['name']}<br>`;
+            }
+    }
     } else {
         order_str += `<h1>Please select what ${this_product_key} you want</h1><br>`;
         // We put the whole table in the form so that anything entered in it will get submitted
         order_str += `
-            <FORM method="GET" id="product_form">
+            <FORM method="GET" id="product_form" action="">
             <INPUT TYPE="HIDDEN" NAME="products_key" VALUE="${this_product_key}">
                 <TABLE BORDER>
                     <TR><TD><B><BIG>Description</TD><TD><B><BIG>Price</TD><TD><B><BIG>Quantity Desired</TD></TR>`;
 
         for (i = 0; i < products.length; i++) {
+            let cart_val = 0; // defualt no qty selected
+            // if this product is in the cart, put quanity in the qty box
+            if(typeof cart[this_product_key] != 'undefined' && typeof cart[this_product_key][i] != 'undefined') {
+                cart_val = cart[this_product_key][i];
+            }
+            
             order_str += `<TR><TD>${products[i]['name']}</TD><TD>${products[i]['price']}</TD><TD>
-                <INPUT TYPE="TEXT"  name="quantities[${i}]"></TD></TR>`;
+                <INPUT TYPE="TEXT"  name="quantities[${i}]" value="${cart_val}"></TD></TR>`;
         }
         order_str += `</TABLE><br>
 <INPUT TYPE="button"  name="Submit" value="Update Cart" onclick="addToCart();">
+    <input type="submit" name="Submit" value="View Cart">
 </FORM>`;
     } // this closes the else for the form and table display
     document.write(order_str);
