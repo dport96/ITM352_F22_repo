@@ -1,9 +1,16 @@
 <head>
     <script src="./functions.js"></script>
     <script>
-
+function addToCart() {
+    params.append('prod_key', this_product_key};
+    for(let i in products) {
+        params.append(`quantities[${i}]`, product_form[`quantities[${i}]`].value);
+    }
+    console.log(selections);
+    loadJSON('./addToCart?selections=' + JSON.stringify(selections), function(resp) {alert(resp)});
+}
         // get the query string
-        let params = (new URL(document.location)).searchParams;
+        var params = (new URL(document.location)).searchParams;
         if (params.has('products_key')) {
             var this_product_key = params.get('products_key');
         } else {
@@ -38,7 +45,7 @@
         order_str += `<h1>Please select what ${this_product_key} you want</h1><br>`;
         // We put the whole table in the form so that anything entered in it will get submitted
         order_str += `
-            <FORM action="" method="GET">
+            <FORM method="GET" id="product_form">
             <INPUT TYPE="HIDDEN" NAME="products_key" VALUE="${this_product_key}">
                 <TABLE BORDER>
                     <TR><TD><B><BIG>Description</TD><TD><B><BIG>Price</TD><TD><B><BIG>Quantity Desired</TD></TR>`;
@@ -48,7 +55,7 @@
                 <INPUT TYPE="TEXT"  name="quantities[${i}]"></TD></TR>`;
         }
         order_str += `</TABLE><br>
-<INPUT TYPE="SUBMIT"  name="Submit" value="Select">
+<INPUT TYPE="button"  name="Submit" value="Update Cart" onclick="addToCart();">
 </FORM>`;
     } // this closes the else for the form and table display
     document.write(order_str);
